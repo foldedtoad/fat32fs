@@ -35,7 +35,7 @@ reset:
   jsr print_char
 
   ; We need to apply around 80 clock pulses with CS and MOSI high.
-  ; Normally MOSI doesn't matter when CS is high, but the card is
+  ; Normally MOSI doesnt matter when CS is high, but the card is
   ; not yet is SPI mode, and in this non-SPI state it does care.
 
   lda #SD_CS | SD_MOSI
@@ -148,7 +148,7 @@ sd_writebyte:
   tay                         ; save remaining bits for later
 
   lda #0
-  bcc .sendbit                ; if carry clear, don't set MOSI for this bit
+  bcc .sendbit                ; if carry clear, dont set MOSI for this bit
   ora #SD_MOSI
 
 .sendbit:
