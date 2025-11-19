@@ -15,7 +15,6 @@
 ;-----------------------------------------------------------------------------
 .export sd_init, sd_readsector
 
-
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
@@ -30,11 +29,10 @@ sd_init:
   ldx #160               ; toggle the clock 160 times, so 80 low-high transitions
 @preinitloop:
   eor #SD_SCK
-  sta PORTA
+  sta PORTB
   dex
   bne @preinitloop
   
-
 @cmd0:    ; GO_IDLE_STATE - resets card to idle state, and SPI mode
   lda #<sd_cmd0_bytes
   sta zp_sd_address+0
@@ -106,7 +104,6 @@ sd_init:
 
   jmp @cmd55
 
-
 @initialized:
   lda #'Y'
   jsr OUTCHR
@@ -140,12 +137,12 @@ sd_readbyte:
 @loop:
 
   lda #SD_MOSI                ; enable card (CS low), set MOSI (resting state), SCK low
-  sta PORTA
+  sta PORTB
 
   lda #SD_MOSI | SD_SCK       ; toggle the clock high
-  sta PORTA
+  sta PORTB
 
-  lda PORTA                   ; read next bit
+  lda PORTB                   ; read next bit
   and #SD_MISO
 
   clc                         ; default to clearing the bottom bit
@@ -162,14 +159,12 @@ sd_readbyte:
   rts
 
 ;-----------------------------------------------------------------------------
-; 
+; Tick the clock 8 times with descending bits on MOSI
+; SD communication is mostly half-duplex so we ignore anything it sends back here
 ;-----------------------------------------------------------------------------
 sd_writebyte:
-  ; Tick the clock 8 times with descending bits on MOSI
-  ; SD communication is mostly half-duplex so we ignore anything it sends back here
 
   ldx #8                      ; send 8 bits
-
 @loop:
   asl                         ; shift next bit into carry
   tay                         ; save remaining bits for later
@@ -179,9 +174,9 @@ sd_writebyte:
   ora #SD_MOSI
 
 @sendbit:
-  sta PORTA                   ; set MOSI (or not) first with SCK low
+  sta PORTB                   ; set MOSI (or not) first with SCK low
   eor #SD_SCK
-  sta PORTA                   ; raise SCK keeping MOSI the same, to send the bit
+  sta PORTB                   ; raise SCK keeping MOSI the same, to send the bit
 
   tya                         ; restore remaining bits to send
 
@@ -205,15 +200,19 @@ sd_waitresult:
 ;-----------------------------------------------------------------------------
 sd_sendcommand:
   ; Debug print which command is being executed
-
+  jsr CRLF
   lda #'c'
+  jsr OUTCHR
+  lda #'m'
+  jsr OUTCHR
+  lda #'d'
   jsr OUTCHR
   ldx #0
   lda (zp_sd_address,x)
-  jsr OUTBYT
+  jsr OBCRLF
 
   lda #SD_MOSI           ; pull CS low to begin command
-  sta PORTA
+  sta PORTB
 
   ldy #0
   lda (zp_sd_address),y    ; command byte
@@ -242,23 +241,21 @@ sd_sendcommand:
 
   ; End command
   lda #SD_CS | SD_MOSI   ; set CS high again
-  sta PORTA
+  sta PORTB
 
   pla   ; restore result code
   rts
 
 ;-----------------------------------------------------------------------------
-; 
+; Read a sector from the SD card.  A sector is 512 bytes. 
+; Parameters:
+;    zp_sd_currentsector   32-bit sector number
+;    zp_sd_address     address of buffer to receive data
 ;-----------------------------------------------------------------------------
 sd_readsector:
-  ; Read a sector from the SD card.  A sector is 512 bytes.
-  ;
-  ; Parameters:
-  ;    zp_sd_currentsector   32-bit sector number
-  ;    zp_sd_address     address of buffer to receive data
-  
+
   lda #SD_MOSI
-  sta PORTA
+  sta PORTB
 
   ; Command 17, arg is sector number, crc not checked
   lda #$51                    ; CMD17 - READ_SINGLE_BLOCK
@@ -291,7 +288,7 @@ sd_readsector:
 
   ; End command
   lda #SD_CS | SD_MOSI
-  sta PORTA
+  sta PORTB
 
   rts
 
