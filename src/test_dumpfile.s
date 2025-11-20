@@ -13,7 +13,6 @@
 
 .import fat32_init, fat32_file_read, fat32_finddirent
 .import fat32_openroot, fat32_opendirent
-.import via_init
 .import sd_init
 
 ;-----------------------------------------------------------------------------
@@ -45,8 +44,6 @@ reset:
     jsr print_msg
 
     ; Initialise
-    jsr via_init
-    
     ldx #<msg_sd_init
     ldy #>msg_sd_init
     jsr print_msg
@@ -68,7 +65,6 @@ reset:
     jmp loop
   
 @initsuccess:
-
     ldx #<msg_ok
     ldy #>msg_ok
     jsr print_msg
@@ -196,11 +192,11 @@ print_msg:
 msg_banner:
         .byte "SYM-1 FAT32 File System Test", 13, 10, 0
 msg_sd_init:
-        .byte "Initialize SD card...", 0
+        .byte "Initialize SD card...", 13, 10, 0
 msg_card_type:
         .byte "Card type: ", 0        
 msg_fs_init:
-        .byte "Initialize File System card...", 0
+        .byte "Initialize File System card...", 13, 10, 0
 msg_openroot:
         .byte "Open Root", 13, 10, 0  
 msg_find_dir:

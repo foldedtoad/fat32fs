@@ -17,3 +17,5 @@ fat32_bytesremaining    = zp_fat32_variables + $14  ; 4 bytes
 
 zp_prt_msg_lo      = $A0
 zp_prt_msg_hi      = $A1
+
+zp_errorcode       = $A2

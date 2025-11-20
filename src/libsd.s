@@ -15,10 +15,15 @@
 ;-----------------------------------------------------------------------------
 .export sd_init, sd_readsector
 
+.import via_init
+
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
 sd_init:
+
+  jsr via_init    
+
   ; Let the SD card boot up, by pumping the clock with SD CS disabled
 
   ; We need to apply around 80 clock pulses with CS and MOSI high.
@@ -105,16 +110,14 @@ sd_init:
   jmp @cmd55
 
 @initialized:
-  lda #'Y'
-  jsr OUTCHR
+  lda #0
+  sta zp_errorcode
   rts
 
 @initfailed:
-  lda #'X'
-  jsr OUTCHR
-@loop:
-  jmp @loop
-
+  lda #1
+  sta zp_errorcode
+  rts
 
 sd_cmd0_bytes:
   .byte $40, $00, $00, $00, $00, $95
@@ -199,6 +202,7 @@ sd_waitresult:
 ; 
 ;-----------------------------------------------------------------------------
 sd_sendcommand:
+.if 0
   ; Debug print which command is being executed
   jsr CRLF
   lda #'c'
@@ -210,6 +214,7 @@ sd_sendcommand:
   ldx #0
   lda (zp_sd_address,x)
   jsr OBCRLF
+.endif
 
   lda #SD_MOSI           ; pull CS low to begin command
   sta PORTB
@@ -236,8 +241,10 @@ sd_sendcommand:
   jsr sd_waitresult
   pha
 
+.if 0
   ; Debug print the result code
   jsr OUTBYT
+.endif
 
   ; End command
   lda #SD_CS | SD_MOSI   ; set CS high again
@@ -290,15 +297,14 @@ sd_readsector:
   lda #SD_CS | SD_MOSI
   sta PORTB
 
+  lda #0
+  sta zp_errorcode
   rts
 
 @fail:
-  lda #'s'
-  jsr OUTCHR
-  lda #':'
-  jsr OUTCHR
-  lda #'f'
-  jsr OUTCHR
+  lda #1
+  sta zp_errorcode
+
 @failloop:
   jmp @failloop
 
