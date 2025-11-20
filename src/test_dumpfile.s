@@ -43,38 +43,38 @@ main:
     ldy #>msg_banner
     jsr print_msg
 
-.if 0
-    ldx #<msg_workarea
-    ldy #>msg_workarea
-    jsr print_msg
-    lda #>fat32_workspace
-    jsr OUTBYT
-    lda #<fat32_workspace
-    jsr OBCRLF
-.endif
-
-    ; Initialise
+    ; Initialize
     ldx #<msg_sd_init
     ldy #>msg_sd_init
     jsr print_msg
 
     jsr sd_init
+    bcc @sd_init_ok
+
+    ldx #<msg_fail
+    ldy #>msg_fail
+    jsr print_msg
+    jmp @exit
+@sd_init_ok:
+
+    ldx #<msg_ok
+    ldy #>msg_ok
+    jsr print_msg
 
     ldx #<msg_fs_init
     ldy #>msg_fs_init
     jsr print_msg
 
     jsr fat32_init
-
-    bcc @initsuccess
+    bcc @fat32_init_ok
    
     ; Error during FAT32 initialization
     ldx #<msg_fail
     ldy #>msg_fail
     jsr print_msg
     jmp @exit
-  
-@initsuccess:
+@fat32_init_ok:
+
     ldx #<msg_ok
     ldy #>msg_ok
     jsr print_msg
@@ -188,13 +188,11 @@ print_msg:
 .segment "RODATA"
 
 msg_banner:
-        .byte "SYM-1 FAT32 File System Test", 13, 10, 0
-msg_workarea:
-        .byte "Workarea 0x", 0        
+        .byte "SYM-1 FAT32 File System Test", 13, 10, 0     
 msg_sd_init:
-        .byte "Initialize SD card", 13, 10, 0      
+        .byte "Initialize SDCard...", 0      
 msg_fs_init:
-        .byte "Initialize File System card", 13, 10, 0     
+        .byte "Initialize File System...", 13, 10, 0     
 msg_openroot:
         .byte "Open Root", 13, 10, 0  
 msg_find_dir:
@@ -204,5 +202,5 @@ msg_find_file:
 msg_ok:
         .byte "OK", 13, 10, 0
 msg_fail:
-        .byte "FAILED - Error: ", 0
+        .byte "FAILED ", 0
 

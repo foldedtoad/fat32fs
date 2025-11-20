@@ -112,11 +112,13 @@ sd_init:
 @initialized:
   lda #0
   sta zp_errorcode
+  clc
   rts
 
 @initfailed:
   lda #1
   sta zp_errorcode
+  sec
   rts
 
 sd_cmd0_bytes:

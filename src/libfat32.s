@@ -55,7 +55,7 @@ fat32_init:
   ldx #<msg_mbr
   ldy #>msg_mbr
   jsr print_msg
-  jsr HexDump
+;  jsr HexDump
 
   ; Check some things
   lda fat32_readbuffer+510 ; Boot sector signature 55
@@ -105,7 +105,7 @@ fat32_init:
   ldx #<msg_fat
   ldy #>msg_fat
   jsr print_msg
-  jsr HexDump
+;  jsr HexDump
 
   ; Check some things
   lda fat32_readbuffer+510 ; BPB sector signature 55
