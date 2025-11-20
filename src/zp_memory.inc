@@ -19,3 +19,6 @@ zp_prt_msg_lo      = $A0
 zp_prt_msg_hi      = $A1
 
 zp_errorcode       = $A2
+
+zp_hd_addr_lo      = $A4
+zp_hd_addr_hi      = $A5

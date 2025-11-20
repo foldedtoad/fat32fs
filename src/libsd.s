@@ -135,10 +135,9 @@ sd_readbyte:
   ; Enable the card and tick the clock 8 times with MOSI high, 
   ; capturing bits from MISO and returning them
 
-  ldx #$fe    ; Preloaded with seven ones and a zero, so we stop after eight bits
+  ldx #$FE    ; Preloaded with seven ones and a zero, so we stop after eight bits
 
 @loop:
-
   lda #SD_MOSI                ; enable card (CS low), set MOSI (resting state), SCK low
   sta PORTB
 
@@ -156,7 +155,6 @@ sd_readbyte:
   txa                         ; transfer partial result from X
   rol                         ; rotate carry bit into read result, and loop bit into carry
   tax                         ; save partial result back to X
-  
   bcs @loop                   ; loop if we need to read more bits
 
   rts
@@ -189,12 +187,11 @@ sd_writebyte:
   rts
 
 ;-----------------------------------------------------------------------------
-; 
+; Wait for the SD card to return something other than $ff
 ;-----------------------------------------------------------------------------
 sd_waitresult:
-  ; Wait for the SD card to return something other than $ff
   jsr sd_readbyte
-  cmp #$ff
+  cmp #$FF
   beq sd_waitresult
   rts
 
@@ -202,19 +199,6 @@ sd_waitresult:
 ; 
 ;-----------------------------------------------------------------------------
 sd_sendcommand:
-.if 0
-  ; Debug print which command is being executed
-  jsr CRLF
-  lda #'c'
-  jsr OUTCHR
-  lda #'m'
-  jsr OUTCHR
-  lda #'d'
-  jsr OUTCHR
-  ldx #0
-  lda (zp_sd_address,x)
-  jsr OBCRLF
-.endif
 
   lda #SD_MOSI           ; pull CS low to begin command
   sta PORTB
@@ -243,7 +227,7 @@ sd_sendcommand:
 
 .if 0
   ; Debug print the result code
-  jsr OUTBYT
+  jsr OBCRLF
 .endif
 
   ; End command
@@ -280,12 +264,12 @@ sd_readsector:
 
   jsr sd_waitresult
   cmp #$00
-  bne @fail
+  bne @fail1
 
   ; wait for data
   jsr sd_waitresult
-  cmp #$fe
-  bne @fail
+  cmp #$FE
+  bne @fail2
 
   ; Need to read 512 bytes - two pages of 256 bytes each
   jsr @readpage
@@ -301,13 +285,28 @@ sd_readsector:
   sta zp_errorcode
   rts
 
-@fail:
+@fail1:
   lda #1
   sta zp_errorcode
+  jmp @fail
 
-@failloop:
-  jmp @failloop
+@fail2:
+  lda #2
+  sta zp_errorcode
+  jmp @fail
 
+@fail:
+  jsr CRLF
+  lda #'e'
+  jsr OUTCHR
+  lda #'r'
+  jsr OUTCHR
+  lda #'r'
+  jsr OUTCHR
+  lda zp_errorcode
+  jsr OBCRLF
+
+  rts
 
 @readpage:
   ; Read 256 bytes to the address at zp_sd_address

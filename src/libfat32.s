@@ -8,53 +8,61 @@
 ; imports/exports
 ;-----------------------------------------------------------------------------
 .import sd_init, sd_readsector
+.import fat32_workspace
+.import HexDump
+.import print_msg
 
-.export fat32_init, fat32_file_read, fat32_finddirent, fat32_openroot
-.export fat32_opendirent
+.export fat32_init, fat32_file_read, fat32_finddirent
+.export fat32_openroot, fat32_opendirent
+.export fat32_readbuffer
 
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
+.segment "DATA"
 
 fat32_readbuffer = fat32_workspace
-
 fat32_filenamepointer   = fat32_bytesremaining  ; only used when searching for a file
-
-fat32_workspace = $200      ; two 512 byte pages
 
 FSTYPE_FAT32 = 12
 
 ;-----------------------------------------------------------------------------
-; 
+; Initialize the module - read the MBR etc, find the partition,
+; and set up the variables ready for navigating the filesystem
 ;-----------------------------------------------------------------------------
+.segment "CODE"
+
 fat32_init:
-  ; Initialize the module - read the MBR etc, find the partition,
-  ; and set up the variables ready for navigating the filesystem
 
   ; Read the MBR and extract pertinent information
 
   ; Sector 0
   lda #0
-  sta zp_sd_currentsector
+  sta zp_sd_currentsector+0
   sta zp_sd_currentsector+1
   sta zp_sd_currentsector+2
   sta zp_sd_currentsector+3
 
   ; Target buffer
   lda #<fat32_readbuffer
-  sta zp_sd_address
+  sta zp_sd_address+0
   lda #>fat32_readbuffer
   sta zp_sd_address+1
 
   ; Do the read
   jsr sd_readsector
 
+  ldx #<msg_mbr
+  ldy #>msg_mbr
+  jsr print_msg
+  jsr HexDump
+
   ; Check some things
   lda fat32_readbuffer+510 ; Boot sector signature 55
   cmp #$55
   bne @fail
-  lda fat32_readbuffer+511 ; Boot sector signature aa
-  cmp #$aa
+  lda fat32_readbuffer+511 ; Boot sector signature AA
+  cmp #$AA
   bne @fail
 
   ; Find a FAT32 partition
@@ -76,6 +84,8 @@ fat32_init:
   beq @foundpart
 
 @fail:
+  lda #3
+  sta zp_errorcode
   jmp @error
 
 @foundpart:
@@ -92,12 +102,17 @@ fat32_init:
 
   jsr sd_readsector
 
+  ldx #<msg_fat
+  ldy #>msg_fat
+  jsr print_msg
+  jsr HexDump
+
   ; Check some things
   lda fat32_readbuffer+510 ; BPB sector signature 55
   cmp #$55
   bne @fail
-  lda fat32_readbuffer+511 ; BPB sector signature aa
-  cmp #$aa
+  lda fat32_readbuffer+511 ; BPB sector signature AA
+  cmp #$AA
   bne @fail
 
   lda fat32_readbuffer+17 ; RootEntCnt should be 0 for FAT32
@@ -114,7 +129,6 @@ fat32_init:
   lda fat32_readbuffer+12 ; high byte is 2 (512), 4, 8, or 16
   cmp #2
   bne @fail
-
 
   ; Calculate the starting sector of the FAT
   clc
@@ -196,9 +210,9 @@ fat32_seekcluster:
   ; note: cluster numbers never have the top bit set, so no carry can occur
 
   ; Add FAT starting sector
-  lda zp_sd_currentsector
+  lda zp_sd_currentsector+0
   adc fat32_fatstart
-  sta zp_sd_currentsector
+  sta zp_sd_currentsector+0
   lda zp_sd_currentsector+1
   adc fat32_fatstart+1
   sta zp_sd_currentsector+1
@@ -217,6 +231,11 @@ fat32_seekcluster:
 
   ; Read the sector from the FAT
   jsr sd_readsector
+
+;  ldx #<msg_sector
+;  ldy #>msg_sector
+;  jsr print_msg
+  jsr HexDump
 
   ; Before using this FAT data, set currentsector ready to read the cluster itself
   ; We need to multiply the cluster number minus two by the number of sectors per 
@@ -347,6 +366,11 @@ fat32_readnextsector:
 
   ; Read the sector
   jsr sd_readsector
+
+;  ldx #<msg_sector2
+;  ldy #>msg_sector2
+;  jsr print_msg
+  jsr HexDump
 
   ; Advance to next sector
   inc zp_sd_currentsector+0
@@ -629,4 +653,18 @@ fat32_file_read:
 
 @done:
   rts
+
+;-----------------------------------------------------------------------------
+; Messages
+;-----------------------------------------------------------------------------
+.segment "RODATA"
+
+msg_mbr:
+        .byte 13, 10, "MBR", 13, 10, 0
+msg_fat:
+        .byte 13, 10, "FAT", 13, 10, 0   
+msg_sector:
+        .byte 13, 10, "Sector", 13, 10, 0 
+msg_sector2:
+        .byte 13, 10, "Sector2", 13, 10, 0         
 

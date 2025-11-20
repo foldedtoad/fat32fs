@@ -12,7 +12,7 @@ NULLDEV = /dev/null
 DEL = $(RM)
 RMDIR = $(RM) -r
 
-ASM_SOURCES = test_dumpfile.s libfat32.s libsd.s hwconfig.s
+ASM_SOURCES = test_dumpfile.s libfat32.s libsd.s hwconfig.s hexdump.s
 ASM_OBJECTS = $(ASM_SOURCES:.s=.o)
 
 OBJECTS = $(ASM_OBJECTS)
@@ -27,7 +27,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(LD) -t sym1 --mapfile $(basename $(TARGET)).map $(OBJECTS) -o $@  
-	$(DA) --cpu 6502 $(TARGET) > $(basename $(TARGET))_all.lst
+	#$(DA) --cpu 6502 $(TARGET) > $(basename $(TARGET))_all.lst
 
 %.o: %.c
 	$(CC) -t sym1 -O $< 
@@ -39,7 +39,6 @@ $(TARGET): $(OBJECTS)
 
 clean:
 	$(DEL) -rf *.o *.bin *.lst *.out *.map
-
 
 flatten:
 	hexdump -v -e '1/1 "%02x\n"' $(TARGET) > $(basename $(TARGET)).out

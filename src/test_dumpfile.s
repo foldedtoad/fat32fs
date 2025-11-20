@@ -1,8 +1,6 @@
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
-  ;.org $e000
-
 .include "sym1.inc"
 .include "sym1_ext.inc"
 .include "zp_memory.inc"
@@ -14,11 +12,18 @@
 .import fat32_init, fat32_file_read, fat32_finddirent
 .import fat32_openroot, fat32_opendirent
 .import sd_init
+.import HexDump
+
+.export fat32_workspace, print_msg
 
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
 .segment "DATA"
+
+; 512-byte working buffer (one sector)
+fat32_workspace:
+        .res 512, $00
 
 buffer = $400
 
@@ -32,16 +37,21 @@ filename:
 ;-----------------------------------------------------------------------------
 .segment "CODE"
 
-reset:
-.if 0
-    ldx #$ff
-    txs
-.endif
-
+main:
     ; Print banner
     ldx #<msg_banner
     ldy #>msg_banner
     jsr print_msg
+
+.if 0
+    ldx #<msg_workarea
+    ldy #>msg_workarea
+    jsr print_msg
+    lda #>fat32_workspace
+    jsr OUTBYT
+    lda #<fat32_workspace
+    jsr OBCRLF
+.endif
 
     ; Initialise
     ldx #<msg_sd_init
@@ -55,14 +65,14 @@ reset:
     jsr print_msg
 
     jsr fat32_init
+
     bcc @initsuccess
    
     ; Error during FAT32 initialization
     ldx #<msg_fail
     ldy #>msg_fail
     jsr print_msg
-    jsr OBCRLF
-    jmp loop
+    jmp @exit
   
 @initsuccess:
     ldx #<msg_ok
@@ -94,7 +104,7 @@ reset:
     ldx #<msg_fail
     ldy #>msg_fail
     jsr print_msg
-    jmp loop
+    jmp @exit
     
 @foundsubdir:
 
@@ -119,7 +129,7 @@ reset:
     ldx #<msg_fail
     ldy #>msg_fail
     jsr print_msg   
-    jmp loop
+    jmp @exit
 
 @foundfile:
  
@@ -134,7 +144,7 @@ reset:
     
     jsr fat32_file_read
     
-    ; Dump data to LCD
+    ; Dump data to Console
     jsr CRLF
     jsr CRLF
     jsr CRLF
@@ -143,9 +153,7 @@ reset:
 @printloop:
     lda buffer,y
     jsr OUTCHR
-
     iny
-
     cpy #16
     bne @not16
     jsr CRLF
@@ -154,9 +162,8 @@ reset:
     cpy #32
     bne @printloop
 
-    ; loop forever
-loop:
-    jmp loop
+@exit:
+    rts
 
 ;-----------------------------------------------------------------------------
 ; print_msg - Print null-terminated string
@@ -173,16 +180,7 @@ print_msg:
         iny
         bne @loop
 @done:
-        rts    
-
-;-----------------------------------------------------------------------------
-; 
-;-----------------------------------------------------------------------------
-.if 0
-    .org $fffc
-    .word reset
-    .word $0000
-.endif
+        rts
 
 ;-----------------------------------------------------------------------------
 ; Messages
@@ -191,12 +189,12 @@ print_msg:
 
 msg_banner:
         .byte "SYM-1 FAT32 File System Test", 13, 10, 0
+msg_workarea:
+        .byte "Workarea 0x", 0        
 msg_sd_init:
-        .byte "Initialize SD card...", 13, 10, 0
-msg_card_type:
-        .byte "Card type: ", 0        
+        .byte "Initialize SD card", 13, 10, 0      
 msg_fs_init:
-        .byte "Initialize File System card...", 13, 10, 0
+        .byte "Initialize File System card", 13, 10, 0     
 msg_openroot:
         .byte "Open Root", 13, 10, 0  
 msg_find_dir:
