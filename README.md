@@ -2,7 +2,9 @@
 
 ## This project's Starting Point
 In general, the [sdcard6502](https://github.com/gfoot/sdcard6502) project was used as a starting point.  
-It's recommended to take a look at it for more background information.
+It's recommended to take a look at it for more background information.  
+Much of what is documented there is relevant to this project.
+
 ### Difference from sdcard6502 Project
 * Convert to a Makefile-based build system
 * Convert source to CC65 toolchain standards.
