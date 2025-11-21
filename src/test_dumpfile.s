@@ -157,6 +157,12 @@ main:
     jsr CRLF
     jsr CRLF
 
+    ldx #<msg_size
+    ldy #>msg_size
+    jsr print_msg
+    lda fat32_file_size
+    jsr OBCRLF
+
     ldy #0
 @printloop:
     lda buffer,y
@@ -166,8 +172,7 @@ main:
     bne @not16
     jsr CRLF
 @not16:
-
-    cpy #48
+    cpy fat32_file_size  ; only need lower byte of filesize
     bne @printloop
 
 @exit:
@@ -210,7 +215,9 @@ msg_find_file:
 msg_open_file:
         .byte "Open File: ", 0 
 msg_read_file:
-        .byte "Read File: ", 0                     
+        .byte "Read File: ", 0
+msg_size:
+        .byte "Filesize: 0x" , 0
 msg_ok:
         .byte "OK", 13, 10, 0
 msg_fail:

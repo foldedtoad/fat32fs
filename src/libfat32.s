@@ -14,7 +14,7 @@
 
 .export fat32_init, fat32_file_read, fat32_finddirent
 .export fat32_openroot, fat32_opendirent
-.export fat32_readbuffer
+.export fat32_readbuffer, fat32_file_size
 
 ;-----------------------------------------------------------------------------
 ; 
@@ -633,16 +633,15 @@ fat32_file_read:
   ; And we dont properly support 64k+ files, as its unnecessary complication given
   ; the 6502s small address space
 
-  lda #'S'
-  jsr OUTCHR
-  lda #'Z'
-  jsr OUTCHR
-  lda #':'
-  jsr OUTCHR
-  lda fat32_bytesremaining+1
-  jsr OUTBYT
+  ; Save filesize for use by user-layer
   lda fat32_bytesremaining+0
-  jsr OBCRLF
+  sta fat32_file_size+0
+  lda fat32_bytesremaining+1
+  sta fat32_file_size+1
+  lda fat32_bytesremaining+2
+  sta fat32_file_size+2
+  lda fat32_bytesremaining+3
+  sta fat32_file_size+3
 
   ; Round the size up to the next whole sector
   lda fat32_bytesremaining+0
