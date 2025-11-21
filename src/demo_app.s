@@ -1,5 +1,5 @@
 ;-----------------------------------------------------------------------------
-; 
+; FAT32 File System Demo for SYM-1 (6502)
 ;-----------------------------------------------------------------------------
 .include "sym1.inc"
 .include "sym1_ext.inc"
@@ -201,7 +201,7 @@ print_msg:
 .segment "RODATA"
 
 msg_banner:
-        .byte "SYM-1 FAT32 File System Test", 13, 10, 0     
+        .byte "SYM-1 FAT32 File System Demo", 13, 10, 0     
 msg_sd_init:
         .byte "Initialize SDCard...", 0      
 msg_fs_init:

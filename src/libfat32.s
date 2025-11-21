@@ -48,7 +48,7 @@ fat32_init:
   sta zp_sd_address+0
   lda #>fat32_readbuffer
   sta zp_sd_address+1
-  
+
   ; Do the read
   jsr sd_readsector
 
@@ -198,7 +198,7 @@ fat32_init:
 ;-----------------------------------------------------------------------------
 fat32_seekcluster:
   ; Gets ready to read fat32_nextcluster, and advances it according to the FAT
-  
+
   ; FAT sector = (cluster*4) / 512 = (cluster*2) / 256
   lda fat32_nextcluster
   asl
@@ -263,7 +263,7 @@ fat32_seekcluster:
   lda fat32_nextcluster+3
   sbc #0
   sta zp_sd_currentsector+3
-  
+
   ; Multiply by sectors-per-cluster which is a power of two between 1 and 128
   lda fat32_sectorspercluster
 @spcshiftloop:
@@ -541,7 +541,7 @@ fat32_finddirent:
   ; Form ZP pointer to users filename
   stx fat32_filenamepointer+0
   sty fat32_filenamepointer+1
-  
+
   ; Iterate until name is found or end of directory
 @direntloop:
   jsr fat32_readdirent
@@ -590,7 +590,7 @@ fat32_file_readbyte:
   lda fat32_bytesremaining+3
   sbc #0
   sta fat32_bytesremaining+3
-  
+
   ; Need to read a new sector?
   lda zp_sd_address+1
   cmp #>(fat32_readbuffer+$200)
@@ -710,10 +710,9 @@ print_sector_addr:
 msg_mbr:
         .byte "MBR", 13, 10, 0
 msg_fat:
-        .byte "FAT", 13, 10, 0   
-.endif
-
+        .byte "FAT", 13, 10, 0
 msg_sector:
         .byte 13, 10, "Sector - seekcluster", 13, 10, 0 
 msg_sector2:
-        .byte 13, 10, "Sector2 - readnextsector", 13, 10, 0         
+        .byte 13, 10, "Sector2 - readnextsector", 13, 10, 0
+.endif
