@@ -1,33 +1,14 @@
-# How to read SD cards with a 6502, step by step
+# A Demo of the SYM-1 (6502) Reading a SD Card
+**NOTE:** In general, the [sdcard6502](https://github.com/gfoot/sdcard6502) project was used as a starting point.  
+Its recommended to take a look at it for more background information.
 
-<img src="img/sdcardreader6502.jpg" title="SD card reader in a circuit">
+Below is a photo an overview of the hardware setup for this demo.  
+The SYM-1 has 4K of RAM and version 1.1 of the Monitor. 
+The console (Serial) interface is use, not the hex-keyboard.  
 
-This guide shows how to connect up an SD card reader to a Ben Eater style 6502
-homebrew computer and use it to read data from SDHC cards.
+<img src="img/overview.jpg" title="Overview">
 
-The tutorial ends with being able to read arbitrary sectors from the SDHC card.
-Beyond that, I've included library-style code that can read from a FAT32 filesystem,
-with some example programs.  For more information on this library code, see
-[FAT32 Library Documentation](doc/FAT32Library.md)
+Here is a close-up photo of the physical wiring connecting the SD Card reader to the SYM-1's AA edge connetor.  
 
-I'm only covering SDHC cards.  You pretty much can't buy older/smaller
-cards these days, and not bothering to support the older protocol simplifies
-the code quite a bit.
-
-# Contents
-
-### Intro
-* [0a Prerequisites and References](doc/0a_Prereqs.md)
-* [0b About the Sample Code](doc/0b_SampleCode.md)
-* [0c Initial Hardware Setup](doc/0c_HardwareSetup.md)
-
-### Samples
-* [1  Reading and Writing Bytes](doc/1_ReadingWritingBytes.md)
-* [2  Encaplusated sd\_sendcommand](doc/2_SendCommand.md)
-* [3  Complete Initialization Sequence](doc/3_Initialization.md)
-* [4  Reading Sectors](doc/4_ReadingSectors.md)
-  
-### Appendices
-* [A  Next Steps](doc/A_NextSteps.md)
-* [B  Older SD/MMC Cards](doc/B_OlderCards.md)
+<img src="img/sdcard_detail.jpg" title="SD card details">
 
