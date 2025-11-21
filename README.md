@@ -4,18 +4,22 @@
 In general, the [sdcard6502](https://github.com/gfoot/sdcard6502) project was used as a starting point.  
 It's recommended to take a look at it for more background information.
 ### Difference from sdcard6502 Project
-* Convert source to CC65 toolchain standards
+* Convert source to CC65 toolchain standards.
 * Remove LCD support code, replace with serial console messages.
+* Remove the four example source files.
+* Convert to a Makefile-based build system
+* Consolidate zero-page variables into one file.
+
   
 
 ## The Development and Testing Setup
-All development and testing is on *Ubuntu 24.04 LTS*, and using the *CC65* toolchain. 
+All development and testing is on *Ubuntu 24.04 LTS*, and using the *CC65* toolchain.  
 The terminal app, *minicom*, was used on the Ubuntu system to interact with the SYM-1.  
 There are many guides and videos on the internet showing how to connect to the SYM-1 to a computer, so that won't be detailed here.
 
 ## Hardware Photos
 Below is a photo an overview of the hardware setup for this demo.  
-The SYM-1 has 4K of RAM and version 1.1 of the Monitor. 
+The SYM-1 has 4K of RAM and version 1.1 of the Monitor.   
 The serial console interface is use, not the hex-keyboard.  
 
 <img src="img/overview.jpg" title="Overview">
