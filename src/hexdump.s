@@ -36,17 +36,6 @@ hd_offset:
 ;  fat32_workspace contains the area to be dumped.
 ;-----------------------------------------------------------------------------
 HexDump:
-.if 0
-        jsr CRLF
-        lda #'h'
-        jsr OUTCHR
-        lda #'e'
-        jsr OUTCHR
-        lda #'x'
-        jsr OUTCHR
-        jsr CRLF
-.endif
-
         lda #$00
         sta zp_hd_addr_lo
         sta zp_hd_addr_hi
@@ -73,7 +62,8 @@ HexDump:
 @skip_1:
         cpx #$00
         bne @loop_1
-@skip_3:     
+@skip_3:  
+.if 0   ; do not print last 256 bytes.
         inc zp_hd_addr_hi
         jsr hd_offset
         ldx #$00
@@ -97,6 +87,7 @@ HexDump:
 @skip_2:
         cpx #$00
         bne @loop_2
-
 @skip_4:
+
+.endif
         rts

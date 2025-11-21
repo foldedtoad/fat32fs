@@ -48,14 +48,16 @@ fat32_init:
   sta zp_sd_address+0
   lda #>fat32_readbuffer
   sta zp_sd_address+1
-
+  
   ; Do the read
   jsr sd_readsector
 
+.if 0
   ldx #<msg_mbr
   ldy #>msg_mbr
   jsr print_msg
-;  jsr HexDump
+  jsr HexDump
+.endif
 
   ; Check some things
   lda fat32_readbuffer+510 ; Boot sector signature 55
@@ -102,10 +104,12 @@ fat32_init:
 
   jsr sd_readsector
 
+.if 0
   ldx #<msg_fat
   ldy #>msg_fat
   jsr print_msg
-;  jsr HexDump
+  jsr HexDump
+.endif
 
   ; Check some things
   lda fat32_readbuffer+510 ; BPB sector signature 55
@@ -225,17 +229,21 @@ fat32_seekcluster:
 
   ; Target buffer
   lda #<fat32_readbuffer
-  sta zp_sd_address
+  sta zp_sd_address+0
   lda #>fat32_readbuffer
   sta zp_sd_address+1
 
+  jsr print_sector_addr
+  
   ; Read the sector from the FAT
   jsr sd_readsector
 
-;  ldx #<msg_sector
-;  ldy #>msg_sector
-;  jsr print_msg
+.if 0
+  ldx #<msg_sector
+  ldy #>msg_sector
+  jsr print_msg
   jsr HexDump
+.endif
 
   ; Before using this FAT data, set currentsector ready to read the cluster itself
   ; We need to multiply the cluster number minus two by the number of sectors per 
@@ -359,18 +367,22 @@ fat32_readnextsector:
   dec fat32_pendingsectors
 
   ; Set up target address  
-  lda fat32_address
-  sta zp_sd_address
+  lda fat32_address+0
+  sta zp_sd_address+0
   lda fat32_address+1
   sta zp_sd_address+1
+
+  jsr print_sector_addr
 
   ; Read the sector
   jsr sd_readsector
 
-;  ldx #<msg_sector2
-;  ldy #>msg_sector2
-;  jsr print_msg
+.if 0
+  ldx #<msg_sector2
+  ldy #>msg_sector2
+  jsr print_msg
   jsr HexDump
+.endif
 
   ; Advance to next sector
   inc zp_sd_currentsector+0
@@ -621,8 +633,19 @@ fat32_file_read:
   ; And we dont properly support 64k+ files, as its unnecessary complication given
   ; the 6502s small address space
 
+  lda #'S'
+  jsr OUTCHR
+  lda #'Z'
+  jsr OUTCHR
+  lda #':'
+  jsr OUTCHR
+  lda fat32_bytesremaining+1
+  jsr OUTBYT
+  lda fat32_bytesremaining+0
+  jsr OBCRLF
+
   ; Round the size up to the next whole sector
-  lda fat32_bytesremaining
+  lda fat32_bytesremaining+0
   cmp #1                      ; set carry if bottom 8 bits not zero
   lda fat32_bytesremaining+1
   adc #0                      ; add carry, if any
@@ -655,16 +678,43 @@ fat32_file_read:
   rts
 
 ;-----------------------------------------------------------------------------
+;
+;-----------------------------------------------------------------------------
+print_sector_addr:
+    jsr CRLF
+    lda #'L'
+    jsr OUTCHR
+    lda #'B'
+    jsr OUTCHR    
+    lda #'A'
+    jsr OUTCHR    
+    lda #':'
+    jsr OUTCHR
+.if 0   ; exclude upper 4 hex digits
+    lda zp_sd_currentsector+3
+    jsr OUTBYT
+    lda zp_sd_currentsector+2
+    jsr OUTBYT 
+.endif
+    lda zp_sd_currentsector+1
+    jsr OUTBYT
+    lda zp_sd_currentsector+0
+    jsr OBCRLF
+    rts
+
+;-----------------------------------------------------------------------------
 ; Messages
 ;-----------------------------------------------------------------------------
 .segment "RODATA"
 
+.if 0
 msg_mbr:
-        .byte 13, 10, "MBR", 13, 10, 0
+        .byte "MBR", 13, 10, 0
 msg_fat:
-        .byte 13, 10, "FAT", 13, 10, 0   
-msg_sector:
-        .byte 13, 10, "Sector", 13, 10, 0 
-msg_sector2:
-        .byte 13, 10, "Sector2", 13, 10, 0         
+        .byte "FAT", 13, 10, 0   
+.endif
 
+msg_sector:
+        .byte 13, 10, "Sector - seekcluster", 13, 10, 0 
+msg_sector2:
+        .byte 13, 10, "Sector2 - readnextsector", 13, 10, 0         

@@ -12,7 +12,6 @@
 .import fat32_init, fat32_file_read, fat32_finddirent
 .import fat32_openroot, fat32_opendirent
 .import sd_init
-.import HexDump
 
 .export fat32_workspace, print_msg
 
@@ -25,7 +24,8 @@
 fat32_workspace:
         .res 512, $00
 
-buffer = $400
+buffer:
+        .res $400, $00
 
 subdirname:
   .asciiz "SUBFOLDR   "
@@ -122,6 +122,7 @@ main:
 
     ldx #<filename
     ldy #>filename
+
     jsr fat32_finddirent
     bcc @foundfile
 
@@ -134,6 +135,10 @@ main:
 @foundfile:
  
     ; Open file
+    ldx #<msg_open_file
+    ldy #>msg_open_file
+    jsr print_msg
+
     jsr fat32_opendirent
     
     ; Read file contents into buffer
@@ -142,10 +147,13 @@ main:
     lda #>buffer
     sta fat32_address+1
     
+    ldx #<msg_read_file
+    ldy #>msg_read_file
+    jsr print_msg
+
     jsr fat32_file_read
     
     ; Dump data to Console
-    jsr CRLF
     jsr CRLF
     jsr CRLF
 
@@ -159,7 +167,7 @@ main:
     jsr CRLF
 @not16:
 
-    cpy #32
+    cpy #48
     bne @printloop
 
 @exit:
@@ -192,13 +200,17 @@ msg_banner:
 msg_sd_init:
         .byte "Initialize SDCard...", 0      
 msg_fs_init:
-        .byte "Initialize File System...", 13, 10, 0     
+        .byte "Initialize File System...", 0     
 msg_openroot:
         .byte "Open Root", 13, 10, 0  
 msg_find_dir:
         .byte "Find Directory Entry: ", 0
 msg_find_file:
-        .byte "Find File: ", 0             
+        .byte "Find File: ", 0
+msg_open_file:
+        .byte "Open File: ", 0 
+msg_read_file:
+        .byte "Read File: ", 0                     
 msg_ok:
         .byte "OK", 13, 10, 0
 msg_fail:

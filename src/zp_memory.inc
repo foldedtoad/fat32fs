@@ -14,6 +14,7 @@ fat32_pendingsectors    = zp_fat32_variables + $0D  ; 1 byte
 fat32_address           = zp_fat32_variables + $0E  ; 2 bytes
 fat32_nextcluster       = zp_fat32_variables + $10  ; 4 bytes
 fat32_bytesremaining    = zp_fat32_variables + $14  ; 4 bytes
+fat32_filesize          = zp_fat32_variables + $18  ; 4 bytes
 
 zp_prt_msg_lo      = $A0
 zp_prt_msg_hi      = $A1
