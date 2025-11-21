@@ -17,6 +17,8 @@
 
 .import via_init
 
+GO_IDLE_RETRIES  := 3
+
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
@@ -37,8 +39,11 @@ sd_init:
   sta PORTB
   dex
   bne @preinitloop
-  
-@cmd0:    ; GO_IDLE_STATE - resets card to idle state, and SPI mode
+
+@cmd0:    ; GO_IDLE_STATE - resets card to idle state, and SPI mode  
+  lda #GO_IDLE_RETRIES     ; retries in case sdcard not ready
+  sta zp_sd_retries
+@retry_cmd0:
   lda #<sd_cmd0_bytes
   sta zp_sd_address+0
   lda #>sd_cmd0_bytes
@@ -48,7 +53,13 @@ sd_init:
 
   ; Expect status response $01 (not initialized)
   cmp #$01
-  bne @initfailed
+  beq @cmd8
+
+  dec zp_sd_retries
+  lda #$00
+  cmp zp_sd_retries
+  bne @retry_cmd0
+  jmp @initfailed
 
 @cmd8:    ; SEND_IF_COND - tell the card how we want it to operate (3.3V, etc)
   lda #<sd_cmd8_bytes
