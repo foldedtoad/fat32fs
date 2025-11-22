@@ -27,7 +27,9 @@ Here is a close-up photo of the physical wiring connecting the SD Card reader to
 
 <img src="img/sdcard_detail.jpg" title="SD card details">  
 
-
+### Edge Connector Pinout
+Here is a listing of 44-pin [edge connectors](https://www.amazon.com/s?k=Card+Edge+Connector+Blue+Socket+44+Pin+3.96mm+Pitch&i=electronics&crid=1OSWNDW17LWQ6&sprefix=card+edge+connector+blue+socket+44+pin+3.96mm+pitch+%2Celectronics%2C258&ref=nb_sb_noss_1).
+Below is a close-up photo of the wiring to the edge connector.
 
 
 ## Preparing the SD Card
