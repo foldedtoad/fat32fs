@@ -11,13 +11,17 @@
 * Shrink-wrap: 6 inches.
 * Soldering iron and solder.
 
+### Optionals
+* Logic Analyzer or Oscilloscope which supports SPI and SDCard protocols: Saleae Logic-8 was used.
+
 ## Hardware Photos
 Here is a close-up photos of the physical wiring connecting the SD Card reader to the SYM-1's *AA connetor*.  
 
 <img src="../img/sdcard_detail.jpg" title="SD card details">  
 
+## SYM-1 VIA and Edge Connector Mapping  
 The SPI bus is wired as shown blow.  
-Note that only PORTB on VIA3 (U29) is actually used.
+Note that only **PORTB** on **VIA-3** (U29) is actually used.
 ```
 PORTB = $AC00
 PORTA = $AC01
@@ -30,7 +34,7 @@ MISO : %00000100  - PB2 - Master In Slave In
 CS   : %00001000  - PB3 - Chip Select
 ```
 
-On the Auxiliary Application edge connector traces are shown.  
+On the **Auxiliary Application (AA)** edge connector, the following pin associations are shown.  
 See the [**SYM-1 Reference Manual**](http://www.6502.org/trainers/synertek/manuals/srefman.pdf) page 4-7 for details  
 
 ```
