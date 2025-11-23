@@ -13,7 +13,7 @@ The serial console interface is use, not the hex-keyboard.
 
 Here is a close-up photo of the physical wiring connecting the SD Card reader to the SYM-1's *AA connetor*.  
 
-<img src="img/sdcard_detail.jpg" title="SD card details">  
+<img src="../img/sdcard_detail.jpg" title="SD card details">  
 
 
 ## Edge Connector Pinout
