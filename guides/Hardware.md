@@ -21,11 +21,11 @@ Here is a listing of 44-pin [edge connectors](https://www.amazon.com/s?k=Card+Ed
 
 Below are some close-up photos of the wiring to the edge connector.
 
-<img src="img/wiring.jpg" title="wiring">  
+<img src="../img/wiring.jpg" title="wiring">  
 
-<img src="img/protoboard_details.jpg" title="protoboard details"> 
+<img src="../img/protoboard_details.jpg" title="protoboard details"> 
 
-<img src="img/SPI_wires.jpg" title="SPI wires">   
+<img src="../img/SPI_wires.jpg" title="SPI wires">   
 
-<img src="img/power_wires.jpg" title="power wires">  
+<img src="../img/power_wires.jpg" title="power wires">  
 
