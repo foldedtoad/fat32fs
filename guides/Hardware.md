@@ -1,10 +1,15 @@
 # A Demo of the SYM-1 (6502) Reading a SD Card
 
 ## Prerequisites
-* A SYM-1 board with SuperMonitor V1.1
+* A SYM-1 board with SuperMonitor V1.1, with 4K of RAM.
 * A [power supply board](https://retro-spy.com/product/power-supply-board-for-sym-1-sbc)
 * A USB-to-serial cable with inverters: there are many guides elsewhere to establish a serial connection.
-* A MicroSD Card Adapter
+* A *MicroSD Card Adapter* with level-shifter
+* A SD Card that's SDHC compliant.
+* A Solderless breadboard
+* Jumper wires with 0.1" male headers: six wires.
+* Shrink-wrap: 6 inches.
+* Soldering iron and solder.
 
 ## Hardware Photos
 Below is a photo an overview of the hardware setup for this demo.  
