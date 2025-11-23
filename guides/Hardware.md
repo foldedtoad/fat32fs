@@ -1,4 +1,4 @@
-# A Demo of the SYM-1 (6502) Reading a SD Card
+# Hardware Related Information
 
 ## Prerequisites
 * A SYM-1 board with SuperMonitor V1.1, with 4K of RAM.
@@ -18,6 +18,13 @@
 Here is a close-up photos of the physical wiring connecting the SD Card reader to the SYM-1's *AA connetor*.  
 
 <img src="../img/sdcard_detail.jpg" title="SD card details">  
+
+## Optional SD Card Reader Adapter Modification
+The photo below show a minor, but useful modification to the SD Card adapter.  
+The original 6-pin, right-ange header was desoldered and replaced with a long straight header.  
+This allows the adapter to plysically rest on the breadboard, and also allows for logic analyser attachments.  
+
+<img src="../img/adapter_mod.jpg" title="adapter mod">  
 
 ## SYM-1 VIA and Edge Connector Mapping  
 The SPI bus is wired as shown blow.  
