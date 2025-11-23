@@ -11,21 +11,24 @@ Much of what is documented there is relevant to this project.
 * Remove LCD support code, replace with serial console messages.
 * Consolidate zero-page variables into one file.
 
+## Overview
+Below is a photo an overview of the hardware setup for this demo.  
+
+<img src="img/overview.jpg" title="Overview"> 
+
 ## The Development and Testing Setup
-All development and testing is on *Ubuntu 24.04 LTS*, and using the *CC65* toolchain.  
-The terminal app, *minicom*, was used on the Ubuntu system to interact with the SYM-1.  
+All development and testing is on **Ubuntu 24.04 LTS**, and using the **CC65** toolchain.  
+The terminal app, **minicom**, was used on the Ubuntu system to interact with the SYM-1.  
 There are many guides and videos on the internet showing how to serially connect to the SYM-1 to a computer, so that won't be detailed here.
 
-## Hardware
-There is seperate section on hardware: click [here]() to go to it.
-Below is a photo an overview of the hardware setup for this demo.   
-<img src="img/overview.jpg" title="Overview"> 
+## Hardware Guide
+**There is seperate section on hardware:** click [here](guides/Hardware.md) to go to it.
 
 ## Preparing the SD Card
 An 8-Gbyte SD Card (SDHC) was configured with Gpartd: one FAT32 partition of type "c" (not "b").  
-It's recommended to do a full formatting, not the quick formatting.
-Create a directory named "SUBFOLDR" on the SD Card, and then a file under this directory named "DEEPFILE.TXT"
-The constents of the file can be anything, but is suggested to fill the file with ascii text of no more that 512 bytes.
+It's recommended to do a full formatting, not the quick formatting.  
+Create a directory named "SUBFOLDR" on the SD Card, and then a file under this directory named "DEEPFILE.TXT".  
+The constents of the file can be anything, but is suggested to fill the file with ascii text of no more that 512 bytes.  
 This code was tested with a simple, two-line content shown below (keep it simple).  
 ```
 This is some text
