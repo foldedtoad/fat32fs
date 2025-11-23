@@ -12,6 +12,7 @@ Much of what is documented there is relevant to this project.
 * Consolidate zero-page variables into one file.
 
 ## Overview
+
 Below is a photo an overview of the hardware setup for this demo.  
 
 <img src="img/overview.jpg" title="Overview"> 
@@ -21,6 +22,21 @@ All development and testing is on **Ubuntu 24.04 LTS**, and using the **CC65** t
 The terminal app, **minicom**, was used on the Ubuntu system to interact with the SYM-1.  
 There are many guides and videos on the internet showing how to serially connect to the SYM-1 to a computer, so that won't be detailed here.
 
+### Makefile Build
+This project use the standard **make** supported by Ubuntu.  
+Review the Makefile file and make adjustments to point to your CC65 installation.
+```
+#
+# Remember to set CC65_HOME in your .bashrc file.
+#   example:  export CC65_HOME="~/sym1/cc65"
+#
+AS = $(CC65_HOME)/bin/ca65
+CC = $(CC65_HOME)/bin/cc65
+CL = $(CC65_HOME)/bin/cl65
+LD = $(CC65_HOME)/bin/ld65
+DA = $(CC65_HOME)/bin/da65
+```
+  
 ## Hardware Guide
 **There is seperate section on hardware:** click [here](guides/Hardware.md) to go to it.
 
@@ -28,7 +44,7 @@ There are many guides and videos on the internet showing how to serially connect
 An 8-Gbyte SD Card (SDHC) was configured with Gpartd: one FAT32 partition of type "c" (not "b").  
 It's recommended to do a full formatting, not the quick formatting.  
 Create a directory named "SUBFOLDR" on the SD Card, and then a file under this directory named "DEEPFILE.TXT".  
-The constents of the file can be anything, but is suggested to fill the file with ascii text of no more that 512 bytes.  
+The contents of the file can be anything, but is suggested to fill the file with ASCII text of no more that 512 bytes.  
 This code was tested with a simple, two-line content shown below (keep it simple).  
 ```
 This is some text
