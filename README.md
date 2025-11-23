@@ -16,21 +16,10 @@ All development and testing is on *Ubuntu 24.04 LTS*, and using the *CC65* toolc
 The terminal app, *minicom*, was used on the Ubuntu system to interact with the SYM-1.  
 There are many guides and videos on the internet showing how to serially connect to the SYM-1 to a computer, so that won't be detailed here.
 
-## Hardware Photos
-Below is a photo an overview of the hardware setup for this demo.  
-The SYM-1 has 4K of RAM and version 1.1 of the Monitor.   
-The serial console interface is use, not the hex-keyboard.  
-
-<img src="img/overview.jpg" title="Overview">
-
-Here is a close-up photo of the physical wiring connecting the SD Card reader to the SYM-1's *AA connetor*.  
-
-<img src="img/sdcard_detail.jpg" title="SD card details">  
-
-### Edge Connector Pinout
-Here is a listing of 44-pin [edge connectors](https://www.amazon.com/s?k=Card+Edge+Connector+Blue+Socket+44+Pin+3.96mm+Pitch&i=electronics&crid=1OSWNDW17LWQ6&sprefix=card+edge+connector+blue+socket+44+pin+3.96mm+pitch+%2Celectronics%2C258&ref=nb_sb_noss_1).
-Below is a close-up photo of the wiring to the edge connector.
-
+## Hardware
+There is seperate section on hardware: click [here]() to go to it.
+Below is a photo an overview of the hardware setup for this demo.   
+<img src="img/overview.jpg" title="Overview"> 
 
 ## Preparing the SD Card
 An 8-Gbyte SD Card (SDHC) was configured with Gpartd: one FAT32 partition of type "c" (not "b").  
