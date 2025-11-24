@@ -105,8 +105,8 @@ fat32_init:
   jsr sd_readsector
 
 .if 0
-  ldx #<msg_fat
-  ldy #>msg_fat
+  ldx #<msg_bpb
+  ldy #>msg_bpb
   jsr print_msg
   jsr HexDump
 .endif
@@ -238,20 +238,13 @@ fat32_seekcluster:
   ; Read the sector from the FAT
   jsr sd_readsector
 
-.if 0
-  ldx #<msg_sector
-  ldy #>msg_sector
-  jsr print_msg
-  jsr HexDump
-.endif
-
   ; Before using this FAT data, set currentsector ready to read the cluster itself
   ; We need to multiply the cluster number minus two by the number of sectors per 
   ; cluster, then add the data region start sector
 
   ; Subtract two from cluster number
   sec
-  lda fat32_nextcluster
+  lda fat32_nextcluster+0
   sbc #2
   sta zp_sd_currentsector
   lda fat32_nextcluster+1
@@ -269,7 +262,7 @@ fat32_seekcluster:
 @spcshiftloop:
   lsr
   bcs @spcshiftloopdone
-  asl zp_sd_currentsector
+  asl zp_sd_currentsector+0
   rol zp_sd_currentsector+1
   rol zp_sd_currentsector+2
   rol zp_sd_currentsector+3
@@ -301,7 +294,7 @@ fat32_seekcluster:
 
   ; Offset = (cluster*4) & 511 = (cluster & 127) * 4
   lda fat32_nextcluster
-  and #$7f
+  and #$7F
   asl
   asl
   tay ; Y = low byte of offset
@@ -313,7 +306,7 @@ fat32_seekcluster:
 
   ; Copy out the next cluster in the chain for later use
   lda (zp_sd_address),y
-  sta fat32_nextcluster
+  sta fat32_nextcluster+0
   iny
   lda (zp_sd_address),y
   sta fat32_nextcluster+1
@@ -322,17 +315,17 @@ fat32_seekcluster:
   sta fat32_nextcluster+2
   iny
   lda (zp_sd_address),y
-  and #$0f
+  and #$0F
   sta fat32_nextcluster+3
 
   ; See if its the end of the chain
-  ora #$f0
+  ora #$F0
   and fat32_nextcluster+2
   and fat32_nextcluster+1
-  cmp #$ff
+  cmp #$FF
   bne @notendofchain
   lda fat32_nextcluster+0
-  cmp #$f8
+  cmp #$F8
   bcc @notendofchain
 
   ; Its the end of the chain, set the top bits so that we can tell this later on
@@ -377,13 +370,6 @@ fat32_readnextsector:
   ; Read the sector
   jsr sd_readsector
 
-.if 0
-  ldx #<msg_sector2
-  ldy #>msg_sector2
-  jsr print_msg
-  jsr HexDump
-.endif
-
   ; Advance to next sector
   inc zp_sd_currentsector+0
   bne @sectorincrementdone
@@ -421,7 +407,7 @@ fat32_openroot:
   jsr fat32_seekcluster
 
   ; Set the pointer to a large value so we always read a sector the first time through
-  lda #$ff
+  lda #$FF
   sta zp_sd_address+1
 
   rts
@@ -465,7 +451,7 @@ fat32_opendirent:
   jsr fat32_seekcluster
 
   ; Set the pointer to a large value so we always read a sector the first time through
-  lda #$ff
+  lda #$FF
   sta zp_sd_address+1
 
   rts
@@ -523,8 +509,8 @@ fat32_readdirent:
   ; Check attributes
   ldy #11
   lda (zp_sd_address),y
-  and #$3f
-  cmp #$0f ; LFN => start again
+  and #$3F
+  cmp #$0F ; LFN => start again
   beq fat32_readdirent
 
   ; Yield this result
@@ -709,8 +695,8 @@ print_sector_addr:
 .if 0
 msg_mbr:
         .byte "MBR", 13, 10, 0
-msg_fat:
-        .byte "FAT", 13, 10, 0
+msg_bpb:
+        .byte "BPB", 13, 10, 0
 msg_sector:
         .byte 13, 10, "Sector - seekcluster", 13, 10, 0 
 msg_sector2:
