@@ -5,7 +5,7 @@
 .include "sym1_ext.inc"
 .include "zp_memory.inc"
 
-BUILD_FOR_EEPROM  = 0
+BUILD_FOR_EEPROM  = 0 ; build for first 4K RAM
 
 .if BUILD_FOR_EEPROM
     .org $E000
