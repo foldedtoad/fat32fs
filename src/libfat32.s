@@ -56,7 +56,6 @@ fat32_init:
   ldx #<msg_mbr
   ldy #>msg_mbr
   jsr print_msg
-  jsr HexDump
 .endif
 
   ; Check some things
@@ -108,7 +107,6 @@ fat32_init:
   ldx #<msg_bpb
   ldy #>msg_bpb
   jsr print_msg
-  jsr HexDump
 .endif
 
   ; Check some things
@@ -503,7 +501,7 @@ fat32_readdirent:
   beq @endofdirectory
 
   ; Empty entry => start again
-  cmp #$e5
+  cmp #$E5
   beq fat32_readdirent
 
   ; Check attributes

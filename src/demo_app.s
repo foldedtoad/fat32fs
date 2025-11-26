@@ -104,8 +104,7 @@ main:
     ldx #<msg_fail
     ldy #>msg_fail
     jsr print_msg
-    jmp @exit
-    
+    jmp @exit   
 @foundsubdir:
 
     ; Open subdirectory
