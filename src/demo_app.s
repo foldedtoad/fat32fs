@@ -5,7 +5,9 @@
 .include "sym1_ext.inc"
 .include "zp_memory.inc"
 
-.if 0       ; Activate if building for EPROM
+BUILD_FOR_EEPROM  = 0
+
+.if BUILD_FOR_EEPROM
     .org $E000
 .endif
 
@@ -22,6 +24,14 @@
 ;-----------------------------------------------------------------------------
 ; 
 ;-----------------------------------------------------------------------------
+
+.if BUILD_FOR_EEPROM
+fat32_workspace = $200      ; two pages
+
+buffer = $400
+
+.else 
+
 .segment "DATA"
 
 ; 512-byte working buffer (one sector)
@@ -30,6 +40,8 @@ fat32_workspace:
 
 buffer:
         .res $400, $00
+
+.endif
 
 subdirname:
   .asciiz "SUBFOLDR   "
