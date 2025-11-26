@@ -5,6 +5,10 @@
 .include "sym1_ext.inc"
 .include "zp_memory.inc"
 
+.if 0       ; Activate if building for EPROM
+    .org $E000
+.endif
+
 ;-----------------------------------------------------------------------------
 ; imports/exports
 ;-----------------------------------------------------------------------------
